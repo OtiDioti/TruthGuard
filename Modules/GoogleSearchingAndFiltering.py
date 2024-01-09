@@ -19,35 +19,6 @@ def DuplicateLinkEraser(urls_list):
     have been removed"""
     return list(dict.fromkeys(urls_list)) # converting to dictionary will automatically remove all duplicate indices
 
-def GptPoweredFilter(client, test_sample,  sample_to_be_filtered, model = "gpt-4"):
-    """This function takes in a piece of text (sample_to_be_filtered) and compares
-    it with a 'test_sample'. It then returns whether or not the piece of text contain
-    information relevant to the test_sample."""
-    
-    prompt = """You will now be provided with two pieces of text: a 'sample' text 
-    and a 'test' text. Your task is to read, analyse and compare the two in order
-    to judge whether the 'sample' text contains enough relevant information regarding
-    the content of the 'test' text to train a large language model on the argument covered in 
-    the 'test' text. It is imperative that when presented with these two texts you reply
-    with a 'No.' or 'Yes.' (depending on your considerations)
-    without provinding any reasoning to your answer.""" # gpt answer to prompt
-    answr = """Ok. I will read the provided texts and I will answer with only a'Yes.' 
-    if I think the content of the 'sample' text is worth including in the training set of the 
-    language model or just with a 'No.' otherwise.""" # gpt answer to prompt
-    qstn = f"""The 'test' text reads:  {test_sample} while the 'sample' text
-    reads: {sample_to_be_filtered}""" # this will prompt the model to generate the queries
-    response = client.chat.completions.create(
-               model = model,
-               messages = [{"role":"system", "content":prompt.replace("\n", "")},
-                           {"role":"assistant", "content":answr.replace("\n", "")},
-                           {"role":"user", "content":qstn.replace("\n", "")}]
-               ) # obtaining response
-    full_response = response.choices[0].message.content.lower.replace(".","")  # extracting response text
-    if full_response.count("yes") != 0: # if the answer contains a yes
-        return True # keep the piece of text
-    else:
-        return False # do not keep the piece of text
-
 def GoogleSearcher(query, lang = 'en', region = None, period = '7d'):
     """Given a search query, this function will return a list of urls
     for the first page of results obtained by googling in the google news section.
@@ -133,8 +104,7 @@ def VectorSearchFilter(test_sample, sample_to_be_filtered, key,
     and separating it into chunks of a certain size with a certain overlap between chunks.
     The chunks are then embedded into vectors and the same is done with the test_sample 
     (hopefully the test sample is small enough to be embedded without having to split it). 
-    The function then returns the average of the overlap between the test vector and 
-    the chunk vectors."""
+    The function then returns the text chuncks with associated relevancy score."""
     #### setting up OpenAI key ####
     
     os.environ["OPENAI_API_KEY"] = key
@@ -157,6 +127,5 @@ def VectorSearchFilter(test_sample, sample_to_be_filtered, key,
     distances = [] # initializing list of distances
     for vector_sample in vectorstore: # iterating over all vectors within vectorstore
         distances.append(distance.cosine(vector_sample, test_vector)) # appending the cosine distance between the sample_vector and the test_vector
-        
-    avrg = sum(distances) / len(distances)
-    return avrg, sample_splits # avrg will be used to determine the releveance of a given article, while the splits will be used to obtain summaries later on (avoid double calculations)
+    combined_data = list(zip(sample_splits, distances)) # combining distances with corresponding splits
+    return combined_data # avrg will be used to determine the releveance of a given article, while the splits will be used to obtain summaries later on (avoid double calculations)

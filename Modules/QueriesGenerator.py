@@ -1,4 +1,4 @@
-def QueryGenerator(article, client, piece_of_text = "", n_queries = 2, model = 'gpt-4'):
+def QueryGenerator(client, piece_of_text = "", n_queries = 2, model = 'gpt-4'):
     """Given a piece of text, with title and abstract, this function will return
     n_queries queries to be fed to google to obtain more information regarding the
     topic covered within the piece of text."""
