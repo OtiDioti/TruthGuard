@@ -1,0 +1,7 @@
+openai
+time
+GoogleNews
+newspaper3k
+langchain
+tiktoken
+scipy
