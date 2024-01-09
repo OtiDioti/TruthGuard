@@ -1,3 +1,5 @@
+streamlit-extras
+st-pages
 openai
 GoogleNews
 newspaper3k
