@@ -1,7 +1,6 @@
 import os 
 from GoogleNews import GoogleNews
 from newspaper import Article
-import newspaper as ns
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 import tiktoken # needed to estimate the number of tokens
@@ -15,7 +14,15 @@ def ArticleExtracter(url):
         article.parse() # parsing the article
         main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
     except:
-        return " "
+        url = url[:url.rfind("/")] # sometimes it is necessary to remove everything after last slash to access page
+        try: # sometimes download of articles does not work
+            article.download() # downloading article
+            article.parse() # parsing the article
+            main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
+        except:
+            return " "
+        else:
+            return main_body
     else:
         return main_body
 
@@ -32,7 +39,7 @@ def GoogleSearcher(query, lang = 'en', region = None, period = '7d'):
     googlenews.enableException(True) # enable to throw exeptions
     googlenews.search(query) # obtain news about "query"
     page_1_results = googlenews.page_at(1) # extract list of dictionaries for page 1
-    urls = [page_1_results[i]['link'] for i in range(len(page_1_results))] # obtaining the urls found during the search
+    urls = [result['link'] for result in page_1_results] # obtaining the urls found during the search
     return urls
 
 def GroupSummarizer(texts_list, client, model = 'gpt-4', max_tokens = 8e3):

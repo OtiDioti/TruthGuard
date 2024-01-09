@@ -10,9 +10,12 @@ import time
 from GoogleSearchingAndFiltering import GoogleSearcher, DuplicateLinkEraser, ArticleExtracter, VectorSearchFilter, NumTokensFromString
 from QueriesGenerator import QueryGenerator
 #%% Useful Function (readibility)
+openai_key = "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"
+client = OpenAI(api_key = openai_key)
+
 def UsefulSplits(prompt, nr_of_searches = 3, 
-                 period = "7d", results_per_google_page = 4, sleep_time = 3,
-                 splits_to_include = 15, max_tokens = 8e3):
+                 period = "7d", results_per_google_page = 4, sleep_time = 4,
+                 splits_to_include_per_article = 5, max_tokens = 8e3):
     """This function will take in the information to be fact checked and will return 
     a list of chunk of text that gpt will use to fact check the piece of information to be fact
     checked."""
@@ -24,25 +27,34 @@ def UsefulSplits(prompt, nr_of_searches = 3,
     urls = DuplicateLinkEraser(urls) # eliminating duplicate results
     articles = [] # empty list of articles corresponding to each url
     for url in urls: # iterating over all urls
-        articles.append(ArticleExtracter(url)) # extracting main body of article and appending it 
+        tmp = url[url.find("https://") + 8:] # obtaining main journal url
+        tmp = tmp[:tmp.find("/")] # obtainining main journal url
+        articles.append({"journal" : tmp, 
+                         "article" : ArticleExtracter(url)}) # extracting main body of article and appending it as a dict
     splits_list = [] # empty list of all splits with their relevancy score
-    for article in articles:
-        article_splits = VectorSearchFilter(prompt, article, openai_key) # obtaining the filtering and list of tuples of splits and relative relevancy score
-        splits_list += article_splits
-    sorted_data = sorted(splits_list, key = lambda x: x[1]) # sorting in increasing order according to distances    
-    sorted_splits = [item[0] for item in sorted_data] # this contains all splits in order of increasing distance
-    useful_splits = sorted_splits[:splits_to_include] # taking the first 5 splits as the only ones that gpt will have to read
-    while sum([NumTokensFromString(splits) for splits in useful_splits]) > max_tokens: # while the useful splits are too many to be all fed to gpt
-        useful_splits.pop(-1) # remove the least relevant split
-    return useful_splits
+    for tmp in articles:
+        sorted_data = sorted(VectorSearchFilter(prompt, tmp["article"], openai_key), key = lambda x: x[1]) # sorting in increasing order according to scores    
+        sorted_splits = [item[0] for item in sorted_data] # this contains all ordered splits
+        splits_list.append((tmp["journal"], sorted_splits[splits_to_include_per_article:])) # appending ordered splits with corresponding origin url
+        
+    while sum([NumTokensFromString(" ".join(splits[1])) for splits in splits_list]) > max_tokens: # while the useful splits are too many to be all fed to gpt
+        splits_to_include_per_article -= 1
+        for tmp in articles:
+            sorted_data = sorted(VectorSearchFilter(prompt, tmp["article"], openai_key), key = lambda x: x[1]) # sorting in increasing order according to scores    
+            sorted_splits = [item[0] for item in sorted_data] # this contains all ordered splits
+            splits_list.append((tmp["journal"], sorted_splits[splits_to_include_per_article:])) # appending ordered splits with corresponding origin url
+    return sorted_splits
 
-def Beautifier(string_list):
-    """This function takes in a list of strings and returns a single string where
+def Beautifier(tuples_list):
+    """This function takes in a list of tuples and returns a single string where
     each separate strting has been separated as needed"""
     tmp = ""
-    for idx, string in enumerate(string_list):
-        tmp += f"Article Extract nr. {idx + 1}: {string}.  "
+    for item in tuples_list:
+        tmpp = " ".join(item[1])
+        tmp += f"Article extracts from {item[0]}: {tmpp}.  "
     return tmp
+
+tmp =UsefulSplits("How many casualties have there been in palestine since the beginning of the war?")
 #%% setting up page and set of variables
 hide_pages(st.session_state['pages_to_hide']) # hiding pages from sidebar
 openai_key = st.session_state['API_key'] # extracting api key
@@ -54,7 +66,7 @@ sys_prompt = """You are to receive a piece of text in the form of a question or 
  obtained by performing google searches. Use these pieces of articles to infer the veridicity of the
 first piece of text provided. Try to be exahustive when explaining your reasoning. If no useful information was
 provided then state so, by suggesting to rephrase the initial statement/question. If contrasting information is provided
-make a note of this. Lastly, do not mention to the user the existence of any article extract."""
+make a note of this. When possible make sure to quote the article extracts referencing from where these were obtained."""
 
 gpt_answer = """Ok."""
 
@@ -73,7 +85,7 @@ for message in st.session_state.messages[3:]: # iterating through the messages a
 
 topic_counter = 0 # this will count at which topic the discussion has arrived
 if prompt := st.chat_input("What is the piece of information you would like to fact check?"): # within the chat bar
-   useful_info = UsefulSplits(prompt) # list of strings containing useful info to fact check prompt
+   useful_info = UsefulSplits(prompt) # list of tuples containing the strings containing useful info to fact check prompt and the main url from where these were taken from
    useful_info = Beautifier(useful_info) # obtaining a single string from list
    usr_nudge = f"""The piece of text to be fact checked is {prompt}. To fact check this
     use the following article extracts {useful_info}""" # this will be used to tell gpt where to look for answers

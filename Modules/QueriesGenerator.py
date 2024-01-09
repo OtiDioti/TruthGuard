@@ -39,9 +39,9 @@ def QueryGenerator(client, piece_of_text = "", n_queries = 2, model = 'gpt-4'):
     for i in range(n_queries): # iterating through the number of queries
         tmp = full_response.find("---") # finds index of the first instance of "---"
         if tmp == -1: # if it found nothing
-            queries.append(full_response)
+            queries.append(full_response.replace("\"","").strip())
             break 
         else:
-            queries.append(full_response[:tmp]) # appending the i-th query
+            queries.append(full_response[:tmp].replace("\"","").strip()) # appending the i-th query
             full_response = full_response[tmp + 3:] # eliminating the i-th query from the full response since this has been appended already      
     return queries # returns list of queries
