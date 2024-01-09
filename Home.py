@@ -52,7 +52,7 @@ st.write("""The aim of this project is to help with the fact checking of informa
          The way we handle this is by optimizing for the fact checking of recent events that made it to news outlet. More importantly, this 
          project was born from my need to implement software programs to practice my programming abilities, and therefore any of the results obtained 
          via this project should be taken lightly. 
-         \n For optimal performance we suggest keeping the prompted facts as concise and as direct as possible.
+         \n For optimal performance we suggest keeping the prompted facts as concise and as direct as possible.""")
 
 
 
