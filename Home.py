@@ -15,7 +15,7 @@ st.set_page_config(page_title = 'TruthGuard',
 #%% hiding pages from sidebar
 st.session_state['pages_to_hide'] = 'ChatGPT'
 hide_pages(st.session_state['pages_to_hide'])
-#%%
+#%% 
 def IsKeyValid(key):
     """This function will check that the provided OpenAI key is valid"""
     client = OpenAI(api_key = key)
@@ -51,7 +51,9 @@ st.write("""The aim of this project is to help with the fact checking of informa
          However, note that an objective fact checking of any piece of information is a quasi-impossible task to achieve.
          The way we handle this is by optimizing for the fact checking of recent events that made it to news outlet. More importantly, this 
          project was born from my need to implement software programs to practice my programming abilities, and therefore any of the results obtained 
-         via this project should be taken lightly.""")
+         via this project should be taken lightly. 
+         \n For optimal performance we suggest keeping the prompted facts as concise and as direct as possible. Also, despite the intented purpose of this program
+         try to avoid making use of data within the prompt line (i.e. instead of prompting "Marco has 5 apples" try with "How many apples does marco have?") """)
 
 
 

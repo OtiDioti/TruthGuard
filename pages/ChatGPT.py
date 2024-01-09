@@ -1,5 +1,4 @@
 from openai import OpenAI
-from pynytimes import NYTAPI
 import streamlit as st
 import os 
 import sys
@@ -47,20 +46,15 @@ def Beautifier(string_list):
 #%% setting up page and set of variables
 hide_pages(st.session_state['pages_to_hide']) # hiding pages from sidebar
 openai_key = st.session_state['API_key'] # extracting api key
-language = st.session_state['selected_language'] #  what language deos the user want to practice?
-news_section = st.session_state['top_story_section'] #  what section of the top stories on the nyt should be scanned
 #### setting up key and getting access to OpenAI API ####
 client = OpenAI(api_key = openai_key)
-nyt_key = open(prev_dir + '/Modules/nytkey.txt', 'r').read().strip() # obtains nyt API key from the current directory
-nyt = NYTAPI(nyt_key, parse_dates = True) # connecting to NYT servers using the key
-
 #%% Setting up the initial state of the language model
 sys_prompt = """You are to receive a piece of text in the form of a question or statement 
  to be fact checked. To do this you will also be provided with extracts of articles previously
  obtained by performing google searches. Use these pieces of articles to infer the veridicity of the
 first piece of text provided. Try to be exahustive when explaining your reasoning. If no useful information was
 provided then state so, by suggesting to rephrase the initial statement/question. If contrasting information is provided
-make a note of this."""
+make a note of this. Lastly, do not mention to the user the existence of any article extract."""
 
 gpt_answer = """Ok."""
 
@@ -70,7 +64,7 @@ st.session_state.messages = [
 ]
 
 #%%
-st.title("TrendLingo (beta)") # adds title to page
+st.title("TruthGuard (beta)") # adds title to page
 
 
 for message in st.session_state.messages[3:]: # iterating through the messages avoiding the set up
@@ -92,7 +86,7 @@ if prompt := st.chat_input("What is the piece of information you would like to f
         message_placeholder = st.empty() 
         full_response = "" # initializing response string
         response = client.chat.completions.create(
-                   model = st.session_state["openai_model"],
+                   model = "gpt-4",
                    messages = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
                    )
         full_response += response.choices[0].message.content

@@ -1,6 +1,7 @@
 import os 
 from GoogleNews import GoogleNews
 from newspaper import Article
+import newspaper as ns
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 import tiktoken # needed to estimate the number of tokens
@@ -9,10 +10,14 @@ from scipy.spatial import distance # will be used to obtain cosine distance
 def ArticleExtracter(url):
     """Given a url this function returns the main body of text contained within it"""
     article = Article(url) # extracting article
-    article.download() # downloading article
-    article.parse() # parsing the article
-    main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
-    return main_body
+    try: # sometimes download of articles does not work
+        article.download() # downloading article
+        article.parse() # parsing the article
+        main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
+    except:
+        return " "
+    else:
+        return main_body
 
 def DuplicateLinkEraser(urls_list):
     """takes in a list of urls and returns a new list of urls where all duplicates
