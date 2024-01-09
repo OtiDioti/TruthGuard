@@ -8,14 +8,36 @@ from scipy.spatial import distance # will be used to obtain cosine distance
 #%%
 def ArticleExtracter(url):
     """Given a url this function returns the main body of text contained within it"""
-    article = Article(url) # extracting article
     try: # sometimes download of articles does not work
+        article = Article(url) # extracting article
         article.download() # downloading article
         article.parse() # parsing the article
         main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
     except:
-        url = url[:url.rfind("/")] # sometimes it is necessary to remove everything after last slash to access page
+        idx = url.rfind("/&") # index of where that last appears
+        if idx == -1: # if that was not found
+            idx = url.rfind("-&") # index of where that last appears
+            if idx == -1:
+                idx = url.rfind("&ved")
+        url = url[:idx] # sometimes it is necessary to remove everything after the last /& or -& to access page
         try: # sometimes download of articles does not work
+            article = Article(url) # extracting article
+            article.download() # downloading article
+            article.parse() # parsing the article
+            main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
+        except:
+            return " "
+        else:
+            return main_body
+    if main_body == '': # if it didnt find anything
+        idx = url.rfind("/&") # index of where that last appears
+        if idx == -1: # if that was not found
+            idx = url.rfind("-&") # index of where that last appears
+            if idx == -1:
+                idx = url.rfind("&ved")
+        url = url[:idx] # sometimes it is necessary to remove everything after the last /& or -& to access page
+        try: # sometimes download of articles does not work
+            article = Article(url) # extracting article
             article.download() # downloading article
             article.parse() # parsing the article
             main_body = article.text.strip().replace("\n", "") # obtaining article's main text (this will often return only 1 paragraph, as most nyt articles are locked behind paywall)
