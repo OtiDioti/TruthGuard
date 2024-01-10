@@ -30,10 +30,10 @@ def IsKeyValid(key):
     else:
         return True
 #%% Title
-st.title('Welcome to TruthGuard!')
+st.title("""🕵️‍♂️ Welcome to TruthGuard  🤖🔍""")
 #%% Text bar that will be used by user to inser OpenAI key
 text_input_container = st.empty() # showcase bar
-api_key = st.text_input('Insert OpenAi API key (this will be not registered anywhere):') # asking for key
+api_key = st.text_input('Insert OpenAi API key (this will not be registered anywhere):') # asking for key
 
 printed = False # has the error message been printed?
 while api_key != "" and printed == False: # if the user is inserting an input
@@ -46,33 +46,49 @@ while api_key != "" and printed == False: # if the user is inserting an input
         printed = True # the error message has been printed
         st.info('The provided key is invalid') # ask for valid key
 #%% Info text
-st.write("""🕵️‍♂️ Welcome to FactCheckAI – Empowering You Against Fake News! 🤖🔍
+st.title("""Empowering You Against Fake News""")
+st.write(""" 
 
-Before you dive into the vast ocean of information, let's shed light on what FactCheckAI is all about.
+Before you dive into the vast ocean of information, let's shed light on what TruthGuard is all about.
 
-🎯 Mission:
-Our primary mission is to assist you in fact-checking information sourced from the internet or encountered in daily conversations. While achieving objective fact-checking for every piece of information remains a formidable challenge, we've tailored our focus to recent events covered by news outlets. This ensures a more efficient and relevant verification process.
+## 🎯 Mission:
 
-🌐 Purpose:
-Born out of a passion for honing programming skills, FactCheckAI is more than just a project – it's a tool designed to enhance your ability to discern credible information. However, please note that the results obtained through this platform are best approached with a discerning eye and taken lightly.
+Our primary mission is to assist you in fact-checking information sourced from 
+the internet or encountered in daily conversations. While achieving objective 
+fact-checking for every piece of information remains a formidable challenge, 
+we've tailored our focus to **recent events covered by news outlets**. This ensures 
+a more efficient and relevant verification process. 
 
-💡 Optimal Performance Tips:
-For the best results, we recommend providing concise and direct information when prompted. This helps FactCheckAI deliver swift and accurate assessments, empowering you with the knowledge needed to navigate today's information-rich landscape.
+## 🌐 Purpose:
 
-🤖 GPT-4 Power:
-FactCheckAI is powered by the cutting-edge GPT-4, a state-of-the-art language model. Harnessing the capabilities of this advanced AI technology, we aim to elevate your fact-checking experience to new heights.
+Born out of a passion for honing programming skills, TruthGuard is more than 
+just a project – it's a tool designed to enhance your ability to discern credible 
+information. However, please note that the results obtained through this platform 
+are best approached with a **discerning eye and taken lightly**.
 
-🔒 Your Information Guardian:
-Rest assured, FactCheckAI is here to be your vigilant information guardian, tirelessly working to sift through the noise and provide you with credible insights.
+## 💡 Optimal Performance Tips:
 
-🌟 Why FactCheckAI?
+For the best results, we recommend providing concise and **direct information** when 
+prompted. This helps TruthGuard deliver swift and accurate assessments, empowering 
+you with the knowledge needed to navigate today's information-rich landscape.
 
-    Swift and efficient fact-checking.
-    Tailored focus on recent events from news outlets.
-    Powered by GPT-4 for advanced language understanding.
-    Developed with a passion for programming and a commitment to your information well-being.
+## 🤖 GPT-4 Power:
 
-Ready to navigate the information landscape with confidence? Let FactCheckAI be your guide! 🚀🔗""")
+TruthGuard is powered by the cutting-edge **GPT-4**, a state-of-the-art language model.
+Harnessing the capabilities of this advanced AI technology, we aim to elevate your 
+fact-checking experience to new heights.
+
+## 🔒 Your Information Guardian:
+
+Rest assured, TruthGuard is here to be your vigilant information guardian, 
+tirelessly working to sift through the noise and provide you with credible insights.
+
+## 🌟 Why TruthGuard?
+* Swift and efficient fact-checking.
+* Tailored focus on recent events from news outlets.
+* Powered by GPT-4 for advanced language understanding.
+* Developed with a passion for programming and a commitment to your information well-being.
+* Ready to navigate the information landscape with confidence? Let TruthGuard be your guide! 🚀🔗""")
 
 
 
