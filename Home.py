@@ -46,13 +46,33 @@ while api_key != "" and printed == False: # if the user is inserting an input
         printed = True # the error message has been printed
         st.info('The provided key is invalid') # ask for valid key
 #%% Info text
-st.write('## Wait!!! Before continuing it can be important and useful to understand what this project is about')
-st.write("""The aim of this project is to help with the fact checking of information found on the internet or overheard in conversations.
-         However, note that an objective fact checking of any piece of information is a quasi-impossible task to achieve.
-         The way we handle this is by optimizing for the fact checking of recent events that made it to news outlet. More importantly, this 
-         project was born from my need to implement software programs to practice my programming abilities, and therefore any of the results obtained 
-         via this project should be taken lightly. 
-         \n For optimal performance we suggest keeping the prompted facts as concise and as direct as possible.""")
+st.write("""🕵️‍♂️ Welcome to FactCheckAI – Empowering You Against Fake News! 🤖🔍
+
+Before you dive into the vast ocean of information, let's shed light on what FactCheckAI is all about.
+
+🎯 Mission:
+Our primary mission is to assist you in fact-checking information sourced from the internet or encountered in daily conversations. While achieving objective fact-checking for every piece of information remains a formidable challenge, we've tailored our focus to recent events covered by news outlets. This ensures a more efficient and relevant verification process.
+
+🌐 Purpose:
+Born out of a passion for honing programming skills, FactCheckAI is more than just a project – it's a tool designed to enhance your ability to discern credible information. However, please note that the results obtained through this platform are best approached with a discerning eye and taken lightly.
+
+💡 Optimal Performance Tips:
+For the best results, we recommend providing concise and direct information when prompted. This helps FactCheckAI deliver swift and accurate assessments, empowering you with the knowledge needed to navigate today's information-rich landscape.
+
+🤖 GPT-4 Power:
+FactCheckAI is powered by the cutting-edge GPT-4, a state-of-the-art language model. Harnessing the capabilities of this advanced AI technology, we aim to elevate your fact-checking experience to new heights.
+
+🔒 Your Information Guardian:
+Rest assured, FactCheckAI is here to be your vigilant information guardian, tirelessly working to sift through the noise and provide you with credible insights.
+
+🌟 Why FactCheckAI?
+
+    Swift and efficient fact-checking.
+    Tailored focus on recent events from news outlets.
+    Powered by GPT-4 for advanced language understanding.
+    Developed with a passion for programming and a commitment to your information well-being.
+
+Ready to navigate the information landscape with confidence? Let FactCheckAI be your guide! 🚀🔗""")
 
 
 
